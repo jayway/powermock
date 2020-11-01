@@ -22,9 +22,9 @@ import org.powermock.configuration.Configuration;
 import org.powermock.configuration.ConfigurationType;
 import org.powermock.PowerMockInternalException;
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
+import com.googlecode.openbeans.BeanInfo;
+import com.googlecode.openbeans.Introspector;
+import com.googlecode.openbeans.PropertyDescriptor;
 import java.util.Properties;
 
 class ConfigurationMapper<T extends Configuration> {
