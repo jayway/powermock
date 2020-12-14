@@ -243,6 +243,10 @@ class NotificationBuilder {
     }
 
     void testInstanceCreated(Object newTestInstance) {
+        // Prevent double trigger on same instance
+		if (currentTestInstance == newTestInstance) {
+			return;
+		}
         switch (behaviour) {
             case PENDING:
                 behaviour = DetectedTestRunBehaviour.TEST_INSTANCE_CREATED_FIRST;
