@@ -178,7 +178,7 @@ public class MockRepository {
 	/**
 	 * Add a fully qualified class name for a class that should have its static
 	 * initializers suppressed.
-	 * 
+	 *
 	 * @param className
 	 *            The fully qualified class name for a class that should have
 	 *            its static initializers suppressed.
@@ -190,7 +190,7 @@ public class MockRepository {
 	/**
 	 * Remove a fully qualified class name for a class that should no longer
 	 * have its static initializers suppressed.
-	 * 
+	 *
 	 * @param className
 	 *            The fully qualified class name for a class that should no
 	 *            longer have its static initializers suppressed.
@@ -202,7 +202,7 @@ public class MockRepository {
 	/**
 	 * Check whether or not a class with the fully qualified name should have
 	 * its static initializers suppressed.
-	 * 
+	 *
 	 * @param className
 	 *            {@code true} if class with the fully qualified name
 	 *            {@code className} should have its static initializers
@@ -229,7 +229,7 @@ public class MockRepository {
 	/**
 	 * When a mock framework API needs to store additional state not applicable
 	 * for the other methods, it may use this method to do so.
-	 * 
+	 *
 	 * @param key
 	 *            The key under which the <tt>value</tt> is stored.
 	 * @param value
@@ -246,7 +246,15 @@ public class MockRepository {
 	}
 
 	public static synchronized InvocationHandler removeMethodProxy(Method method) {
-		return methodProxies.remove(method);
+		for (Method proxiedMethod : methodProxies.keySet()) {
+			Class<?> proxiedMethodClass = proxiedMethod.getDeclaringClass();
+			if (proxiedMethod.getName().equals(method.getName())
+					&& ClassLocator.getCallerClass().getName()
+					.equals(proxiedMethodClass.getName())) {
+				return methodProxies.remove(proxiedMethod);
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -259,7 +267,7 @@ public class MockRepository {
 
 	/**
 	 * Add a method to suppress.
-	 * 
+	 *
 	 * @param method
 	 *            The method to suppress.
 	 */
@@ -269,7 +277,7 @@ public class MockRepository {
 
 	/**
 	 * Add a field to suppress.
-	 * 
+	 *
 	 * @param field
 	 *            The field to suppress.
 	 */
@@ -279,7 +287,7 @@ public class MockRepository {
 
 	/**
 	 * Add a field type to suppress. All fields of this type will be suppressed.
-	 * 
+	 *
 	 * @param fieldType
 	 *            The fully-qualified name to a type. All fields of this type
 	 *            will be suppressed.
@@ -290,7 +298,7 @@ public class MockRepository {
 
 	/**
 	 * Add a constructor to suppress.
-	 * 
+	 *
 	 * @param constructor
 	 *            The constructor to suppress.
 	 */
@@ -302,7 +310,15 @@ public class MockRepository {
 	 * @return {@code true} if the <tt>method</tt> should be proxied.
 	 */
 	public static synchronized boolean hasMethodProxy(Method method) {
-		return methodProxies.containsKey(method);
+		for (Method proxiedMethod : methodProxies.keySet()) {
+			Class<?> proxiedMethodClass = proxiedMethod.getDeclaringClass();
+			if (proxiedMethod.getName().equals(method.getName())
+					&& ClassLocator.getCallerClass().getName()
+					.equals(proxiedMethodClass.getName())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -358,7 +374,7 @@ public class MockRepository {
 	/**
 	 * Set a substitute return value for a method. Whenever this method will be
 	 * called the {@code value} will be returned instead.
-	 * 
+	 *
 	 * @return The previous substitute value if any.
 	 */
 	public static synchronized Object putMethodToStub(Method method, Object value) {
@@ -375,7 +391,7 @@ public class MockRepository {
 	/**
 	 * Set a proxy for a method. Whenever this method is called the invocation
 	 * handler will be invoked instead.
-	 * 
+	 *
 	 * @return The method proxy if any.
 	 */
 	public static synchronized InvocationHandler putMethodProxy(Method method, InvocationHandler invocationHandler) {
