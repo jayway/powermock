@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.ProtectionDomain;
+import java.util.*;
 
 /**
  * <p>
@@ -61,7 +62,7 @@ public abstract class MockClassLoader extends DeferSupportingClassLoader {
      * be modified.
      */
     public static final String MODIFY_ALL_CLASSES = "*";
-    
+    private static final String MOCK_MAKER_RESOURCE_NAME = "mockito-extension/org.mockito.plugins.MockMaker";
     protected ClassMarker classMarker;
     protected ClassWrapperFactory classWrapperFactory;
     private MockTransformerChain mockTransformerChain;
@@ -190,4 +191,34 @@ public abstract class MockClassLoader extends DeferSupportingClassLoader {
     }
     
     protected abstract byte[] defineAndTransformClass(final String name, final ProtectionDomain protectionDomain) throws ClassNotFoundException;
+
+    @Override
+    protected final Enumeration<URL> findResources(String name) throws IOException {
+        Enumeration<URL> resources = super.findResources(name);
+        if (name.equals(MOCK_MAKER_RESOURCE_NAME))
+            return prioritizePowermockMockMaker(resources);
+        return resources;
+    }
+
+    /**
+     * Prioritize the MockMaker from powermock-api-mockito2 dependency
+     *
+     * @param resourcesEnumeration the given enumeration of resource URLs
+     * @return the reordered enumeration of resource URLs
+     */
+    private static Enumeration<URL> prioritizePowermockMockMaker(Enumeration<URL> resourcesEnumeration) {
+        Vector<URL> resources = new Vector<URL>();
+        final String powermockAPIMockito2 = "powermock-api-mockito2";
+        URL powermockMockMakerURL = null;
+        while(resourcesEnumeration.hasMoreElements()) {
+            URL current = resourcesEnumeration.nextElement();
+            String currentPath = current.getPath();
+            if (currentPath.contains(powermockAPIMockito2))
+                powermockMockMakerURL = current;
+            else resources.add(current);
+        }
+        if (powermockMockMakerURL != null) resources.add(0, powermockMockMakerURL);
+        else throw new IllegalArgumentException("given enumeration has to contain the resource, " + MOCK_MAKER_RESOURCE_NAME + ", in " + powermockAPIMockito2 + " jar. Please make sure the dependency configuration is correct");
+        return resources.elements();
+    }
 }
