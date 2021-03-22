@@ -22,7 +22,7 @@ buildscript {
 ext{
     gradleScriptDir = "${rootProject.projectDir}/gradle"
 
-    byteBuddy = "1.10.14"
+    byteBuddy = "1.10.22"
     easymockVersion = "4.0.1"
     hamcrestVersion = "1.3"
     assertjVersion = "2.6.0"
