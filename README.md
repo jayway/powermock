@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/powermock/powermock.svg?branch=master)](https://travis-ci.org/powermock/powermock)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.powermock/powermock-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.powermock/powermock-core)
+[![Download](https://badgen.net/badge/download/latest%20release/green?icon=github)](https://github.com/powermock/powermock/releases/latest)
 [![Javadoc](https://javadoc.io/badge2/org.powermock/powermock-core/javadoc.svg)](https://javadoc.io/doc/org.powermock/powermock-core)
 
 Writing unit tests can be hard and sometimes good design has to be sacrificed for the sole purpose of testability. Often testability corresponds to good design, but this is not always the case. For example final classes and methods cannot be used, private methods sometimes need to be protected or unnecessarily moved to a collaborator, static methods should be avoided completely and so on simply because of the limitations of existing frameworks.
